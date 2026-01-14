@@ -327,8 +327,8 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 Jika Anda mengalami masalah atau memiliki pertanyaan:
 
-- 📧 Email: [muhammad-seman@example.com]
-- 🐛 Issues: [GitHub Issues](https://github.com/muhammad-seman/codeigniter4_RBAC_boilerplate/issues)
+- 📧 Email: [mdestafadilah@gmail.com]
+- 🐛 Issues: [GitHub Issues](https://github.com/mdestafadilah/codeigniter4-rbac-shield/issues)
 
 ## 🙏 Acknowledgments
 
@@ -346,5 +346,5 @@ Jika Anda mengalami masalah atau memiliki pertanyaan:
 
 **Happy Coding! 🚀**
 
-> Developed by [mdestafadilah](https://github.com/mdestafadilah/codeigniter4_RBAC_boilerplate)
+> Developed by [mdestafadilah](https://github.com/mdestafadilah/codeigniter4-rbac-shield)
 > Baseon [Muhammad Seman](https://github.com/muhammad-seman/codeigniter4_RBAC_boilerplate)
