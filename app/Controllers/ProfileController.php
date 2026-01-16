@@ -44,7 +44,7 @@ class ProfileController extends BaseController
 
         $data = [
             'title' => 'Edit Profile',
-            'user' => $user
+            'user' => $user->toArray() // Fix: Convert entity to array for view
         ];
 
         return view('profile/edit', $data);

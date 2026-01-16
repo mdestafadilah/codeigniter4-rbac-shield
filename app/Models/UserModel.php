@@ -21,7 +21,8 @@ class UserModel extends ShieldUserModel
     protected $table            = 'users';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
-    protected $returnType       = 'array';
+    // protected $returnType       = 'array'; // Fix: Shield expects Entity, not array
+
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = ['username', 'email', 'password', 'role', 'role_id', 'active', 'last_login'];
@@ -96,6 +97,7 @@ class UserModel extends ShieldUserModel
         return $this->select('users.*, roles.name as role_name, roles.display_name as role_display_name')
             ->join('roles', 'roles.id = users.role_id', 'left')
             ->where('users.id', $userId)
+            ->asArray() // Fix: Return array to maintain compatibility with views
             ->first();
     }
 
