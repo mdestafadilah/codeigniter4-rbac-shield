@@ -285,7 +285,7 @@
 
                 <div class="register-link">
                     <span class="text-muted">Already have an account? </span>
-                    <a href="<?= base_url('/auth/login') ?>">Login here</a>
+                    <a href="<?= base_url('/login') ?>">Login here</a>
                 </div>
             </div>
         </div>

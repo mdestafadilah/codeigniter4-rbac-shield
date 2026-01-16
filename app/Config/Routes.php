@@ -15,13 +15,13 @@ $routes->options('(:any)', static function () {
 });
 
 // Auth Routes
-$routes->group('auth', ['filter' => 'auth-rates'], function($routes) {
-    $routes->get('login', 'AuthController::login');
-    $routes->post('login', 'AuthController::login');
-    $routes->get('register', 'AuthController::register');
-    $routes->post('register', 'AuthController::register');
-    $routes->get('logout', 'AuthController::logout');
-});
+// $routes->group('auth', ['filter' => 'auth-rates'], function($routes) {
+//     $routes->get('login', 'AuthController::login');
+//     $routes->post('login', 'AuthController::login');
+//     $routes->get('register', 'AuthController::register');
+//     $routes->post('register', 'AuthController::register');
+//     $routes->get('logout', 'AuthController::logout');
+// });
 
 // Shield Auth Routes
 service('auth')->routes($routes);

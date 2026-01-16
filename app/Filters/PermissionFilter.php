@@ -21,7 +21,7 @@ class PermissionFilter implements FilterInterface
     {
         // Check if user is logged in
         if (!session()->get('logged_in')) {
-            return redirect()->to('/auth/login');
+            return redirect()->to('/login');
         }
 
         // Get required permission from arguments

@@ -22,7 +22,7 @@ class ProfileController extends BaseController
         $user = $this->userModel->getUserWithRole($userId);
 
         if (!$user) {
-            return redirect()->to('/auth/login');
+            return redirect()->to('/login');
         }
 
         $data = [
@@ -39,7 +39,7 @@ class ProfileController extends BaseController
         $user = $this->userModel->find($userId);
 
         if (!$user) {
-            return redirect()->to('/auth/login');
+            return redirect()->to('/login');
         }
 
         $data = [
@@ -107,7 +107,7 @@ class ProfileController extends BaseController
         $user = $this->userModel->find($userId);
 
         if (!$user) {
-            return redirect()->to('/auth/login');
+            return redirect()->to('/login');
         }
 
         // Verify current password

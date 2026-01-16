@@ -280,7 +280,7 @@
                     </div>
                 <?php endif; ?>
 
-                <?= form_open('/auth/login') ?>
+                <?= form_open('/login') ?>
                     <div class="mb-3">
                         <label for="username" class="form-label fw-semibold">Username</label>
                         <div class="input-group">

@@ -11,7 +11,7 @@ class Home extends BaseController
         if (session()->get('logged_in')) {
             return redirect()->to('/dashboard');
         }
-        return redirect()->to('/auth/login');
+        return redirect()->to('/login');
     }
 
     public function dashboard()
