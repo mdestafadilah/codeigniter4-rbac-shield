@@ -38,7 +38,7 @@
                         <ul class="dropdown-menu">
                             <li><span class="dropdown-item-text">Role: <?= ucfirst(session()->get('role')) ?></span></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="<?= base_url('/auth/logout') ?>">
+                            <li><a class="dropdown-item" href="<?= base_url('/logout') ?>">
                                 <i class="fas fa-sign-out-alt me-1"></i>Logout
                             </a></li>
                         </ul>
