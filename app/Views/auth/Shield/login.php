@@ -42,7 +42,7 @@
             padding: 60px 40px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            /* justify-content: center; */
             align-items: center;
             text-align: center;
             color: white;
@@ -361,6 +361,7 @@
                 <?php endif ?>
 
                 <!-- Demo Accounts -->
+                <!--
                 <div class="demo-card">
                     <div class="demo-title">
                         <i class="fas fa-key me-2"></i>Demo Accounts
@@ -378,6 +379,7 @@
                         </div>
                     </div>
                 </div>
+                -->
             </div>
         </div>
     </div>
