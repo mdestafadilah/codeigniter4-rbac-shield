@@ -336,11 +336,7 @@ Jika Anda mengalami masalah atau memiliki pertanyaan:
 - [Bootstrap 5](https://getbootstrap.com/) - CSS framework
 - [Font Awesome](https://fontawesome.com/) - Icons
 - [PostgreSQL](https://www.postgresql.org/docs/) - Database PostgreSQL
-- [CI-4-REST-JWT](https://github.com/Virtuallified/REST-Api_JWT_CodeIgniter4),[CI-4-REST-JWT-SIMPLE](https://sobatcoding.com/articles/rest-api-codeigniter-4-menggunakan-jwt-auth)
 - [AntiGravity](https://antigravityide.com/) - IDE Editor
-- [Cursor](https://cursor.com/) - IDE Editor
-- [Komunitas CodeIgniter](https://codeigniter.com/forums)
-- [ChatGPT](https://chat.openai.com/), [Perplexity.AI](https://perplexity.ai/)
 
 ---
 
