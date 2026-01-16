@@ -18,7 +18,7 @@ class ProfileController extends BaseController
 
     public function index()
     {
-        $userId = session()->get('user_id');
+        $userId = auth()->id();
         $user = $this->userModel->getUserWithRole($userId);
 
         if (!$user) {
@@ -35,8 +35,8 @@ class ProfileController extends BaseController
 
     public function edit()
     {
-        $userId = session()->get('user_id');
-        $user = $this->userModel->find($userId);
+        // Use Shield's user entity
+        $user = auth()->user();
 
         if (!$user) {
             return redirect()->to('/login');
@@ -52,7 +52,8 @@ class ProfileController extends BaseController
 
     public function update()
     {
-        $userId = session()->get('user_id');
+        $user = auth()->user();
+        $userId = $user->id;
         
         $rules = [
             'username' => 'required|min_length[3]|max_length[50]|is_unique[users.username,id,' . $userId . ']',
@@ -63,19 +64,13 @@ class ProfileController extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        $data = [
-            'username' => $this->request->getPost('username'),
-            'email' => $this->request->getPost('email'),
-            'updated_at' => date('Y-m-d H:i:s')
-        ];
+        // Prepare data for update
+        $user->username = $this->request->getPost('username');
+        $user->email    = $this->request->getPost('email');
 
-        if ($this->userModel->update($userId, $data)) {
-            // Update session data
-            session()->set([
-                'username' => $data['username'],
-                'email' => $data['email']
-            ]);
-
+        // Use Shield's method to save the user (handles events etc)
+        $users = auth()->getProvider();
+        if ($users->save($user)) {
             return redirect()->to('/profile')->with('success', 'Profile updated successfully!');
         }
 
@@ -103,26 +98,26 @@ class ProfileController extends BaseController
             return redirect()->back()->with('errors', $this->validator->getErrors());
         }
 
-        $userId = session()->get('user_id');
-        $user = $this->userModel->find($userId);
+        $user = auth()->user();
+        $currentPassword = $this->request->getPost('current_password');
+        $newPassword = $this->request->getPost('new_password');
 
-        if (!$user) {
-            return redirect()->to('/login');
-        }
+        // Verify current password using Shield's checker
+        $result = auth()->check([
+            'email'    => $user->email,
+            'password' => $currentPassword,
+        ]);
 
-        // Verify current password
-        if (!password_verify($this->request->getPost('current_password'), $user['password'])) {
+        if (!$result->isOK()) {
             return redirect()->back()->with('error', 'Current password is incorrect.');
         }
 
         // Update password
-        $data = [
-            'password' => password_hash($this->request->getPost('new_password'), PASSWORD_DEFAULT),
-            'updated_at' => date('Y-m-d H:i:s')
-        ];
-
-        if ($this->userModel->update($userId, $data)) {
-            return redirect()->to('/profile')->with('success', 'Password changed successfully!');
+        $user->password = $newPassword; // Shield Entity handles hashing
+        $users = auth()->getProvider();
+        
+        if ($users->save($user)) {
+             return redirect()->to('/profile')->with('success', 'Password changed successfully!');
         }
 
         return redirect()->back()->with('error', 'Failed to change password. Please try again.');

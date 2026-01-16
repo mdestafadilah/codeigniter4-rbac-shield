@@ -20,7 +20,7 @@ class PermissionFilter implements FilterInterface
     public function before(RequestInterface $request, $arguments = null)
     {
         // Check if user is logged in
-        if (!session()->get('logged_in')) {
+        if (!auth()->loggedIn()) {
             return redirect()->to('/login');
         }
 
@@ -31,7 +31,7 @@ class PermissionFilter implements FilterInterface
             return; // No permission required
         }
 
-        $userId = session()->get('user_id');
+        $userId = auth()->id();
         $userModel = new UserModel(); //exit(dd($requiredPermission));
         
         // Check if user has the required permission

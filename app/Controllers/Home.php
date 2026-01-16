@@ -8,7 +8,7 @@ class Home extends BaseController
 {
     public function index()
     {
-        if (session()->get('logged_in')) {
+        if (auth()->loggedIn()) {
             return redirect()->to('/dashboard');
         }
         return redirect()->to('/login');
