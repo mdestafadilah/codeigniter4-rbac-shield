@@ -25,7 +25,7 @@ class UserModel extends ShieldUserModel
 
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['username', 'email', 'password', 'role', 'role_id', 'active', 'last_login'];
+    protected $allowedFields    = ['username', 'role_id', 'active', 'last_login'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -43,11 +43,11 @@ class UserModel extends ShieldUserModel
     // Validation
     protected $validationRules      = [
         'username' => 'required|min_length[3]|max_length[100]|is_unique[users.username,id,{id}]',
-        'email'    => 'required|valid_email|is_unique[users.email,id,{id}]',
-        'password' => 'min_length[6]',
+        // 'email'    => 'required|valid_email|is_unique[users.email,id,{id}]', // Removed: Not in users table
+        // 'password' => 'min_length[6]', // Removed: Not in users table
         'role'     => 'permit_empty|in_list[admin,user]',
-        'role_id'  => 'permit_empty|integer',
-        'active'   => 'permit_empty|in_list[false,true]'
+        // 'role_id'  => 'permit_empty|integer',
+        // 'active'   => 'permit_empty|in_list[false,true]'
     ];
     protected $validationMessages   = [
         'username' => [
@@ -94,11 +94,8 @@ class UserModel extends ShieldUserModel
 
     protected function setDefaultAttributes(array $data)
     {
-        // 1. Set default role name
-        if (!isset($data['data']['role'])) {
-            $data['data']['role'] = 'user';
-        }
-
+        // 1. Set default role name - REMOVED: Column 'role' does not exist in users table
+        
         // 2. Set default role_id if missing
         if (!isset($data['data']['role_id'])) {
              $roleModel = model('App\Models\Role');
@@ -108,9 +105,9 @@ class UserModel extends ShieldUserModel
              }
         }
         
-        // 3. Set active = false (User request)
+        // 3. Set active = 0 (User request, int for Postgres smallint)
         if (!isset($data['data']['active'])) {
-             $data['data']['active'] = false;
+             $data['data']['active'] = 0;
         }
 
         return $data;
