@@ -45,9 +45,9 @@ class UserModel extends ShieldUserModel
         'username' => 'required|min_length[3]|max_length[100]|is_unique[users.username,id,{id}]',
         'email'    => 'required|valid_email|is_unique[users.email,id,{id}]',
         'password' => 'min_length[6]',
-        'role'     => 'in_list[admin,user]',
-        'role_id'  => 'integer',
-        'active'   => 'in_list[false,true]'
+        'role'     => 'permit_empty|in_list[admin,user]',
+        'role_id'  => 'permit_empty|integer',
+        'active'   => 'permit_empty|in_list[false,true]'
     ];
     protected $validationMessages   = [
         'username' => [
@@ -65,7 +65,7 @@ class UserModel extends ShieldUserModel
 
     // Callbacks
     protected $allowCallbacks = true;
-    protected $beforeInsert   = ['hashPassword'];
+    protected $beforeInsert   = ['hashPassword', 'setDefaultAttributes']; // Added setDefaultAttributes
     protected $afterInsert    = [];
     protected $beforeUpdate   = ['hashPasswordUpdate'];
     protected $afterUpdate    = [];
@@ -89,6 +89,30 @@ class UserModel extends ShieldUserModel
         } else {
             unset($data['data']['password']);
         }
+        return $data;
+    }
+
+    protected function setDefaultAttributes(array $data)
+    {
+        // 1. Set default role name
+        if (!isset($data['data']['role'])) {
+            $data['data']['role'] = 'user';
+        }
+
+        // 2. Set default role_id if missing
+        if (!isset($data['data']['role_id'])) {
+             $roleModel = model('App\Models\Role');
+             $userRole = $roleModel->where('name', 'user')->first();
+             if ($userRole) {
+                 $data['data']['role_id'] = $userRole['id'];
+             }
+        }
+        
+        // 3. Set active = false (User request)
+        if (!isset($data['data']['active'])) {
+             $data['data']['active'] = false;
+        }
+
         return $data;
     }
 
