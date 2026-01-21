@@ -25,7 +25,7 @@ Ini adalah **boilerplate aplikasi web** yang dibangun menggunakan **CodeIgniter 
 
 Boilerplate ini sudah dilengkapi dengan sistem autentikasi yang aman dan siap pakai:
 
-- ✅ **Login & Registrasi**: Fungsi dasar untuk pendaftaran akun dan login sudah tersedia
+- ✅ **Login & Registrasi**: Fungsi dasar untuk pendaftaran akun dan login oleh shield
 - ✅ **Proteksi Halaman**: Menggunakan Filters untuk melindungi routes atau controller tertentu
 - ✅ **Session Management**: Mengelola sesi pengguna dengan cara yang aman dan efisien
 - ✅ **Role-Based Access Control (RBAC)**: Sistem role admin dan user
