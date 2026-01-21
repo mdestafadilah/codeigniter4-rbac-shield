@@ -25,7 +25,7 @@ class UserModel extends ShieldUserModel
 
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['username', 'role_id', 'active', 'last_login'];
+    protected $allowedFields    = ['username', 'email', 'role_id', 'active', 'last_login','status'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -43,11 +43,8 @@ class UserModel extends ShieldUserModel
     // Validation
     protected $validationRules      = [
         'username' => 'required|min_length[3]|max_length[100]|is_unique[users.username,id,{id}]',
-        // 'email'    => 'required|valid_email|is_unique[users.email,id,{id}]', // Removed: Not in users table
-        // 'password' => 'min_length[6]', // Removed: Not in users table
-        'role'     => 'permit_empty|in_list[admin,user]',
-        // 'role_id'  => 'permit_empty|integer',
-        // 'active'   => 'permit_empty|in_list[false,true]'
+        'email'    => 'required|valid_email|is_unique[users.email,id,{id}]',
+        'status'   => 'permit_empty|in_list[active,inactive]'
     ];
     protected $validationMessages   = [
         'username' => [
@@ -56,8 +53,10 @@ class UserModel extends ShieldUserModel
             'max_length' => 'Username maksimal 100 karakter',
             'is_unique' => 'Username sudah digunakan'
         ],
-        'active' => [
-            'in_list' => 'Active harus berupa true atau false'
+        'email' => [
+            'required' => 'Email harus diisi',
+            'valid_email' => 'Email tidak valid',
+            'is_unique' => 'Email sudah digunakan'
         ]
     ];
     protected $skipValidation       = false;
