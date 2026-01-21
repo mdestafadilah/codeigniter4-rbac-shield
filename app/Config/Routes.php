@@ -15,6 +15,10 @@ $routes->options('(:any)', static function () {
 });
 
 // Shield Auth Routes
+// Override Register to use custom controller
+$routes->get('register', '\App\Controllers\Auth\RegisterController::registerView');
+$routes->post('register', '\App\Controllers\Auth\RegisterController::registerAction');
+
 service('auth')->routes($routes);
 
 

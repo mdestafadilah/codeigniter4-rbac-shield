@@ -80,9 +80,9 @@ class UserModel extends ShieldUserModel
              }
         }
         
-        // 3. Set active = 0 (User request, int for Postgres smallint)
+        // 3. Set active = 1 (User request, int for Postgres smallint)
         if (!isset($data['data']['active'])) {
-             $data['data']['active'] = 0;
+             $data['data']['active'] = 1;
         }
 
         // 4. Capture Email from Request if missing (Shield doesn't pass it to User Entity by default)
