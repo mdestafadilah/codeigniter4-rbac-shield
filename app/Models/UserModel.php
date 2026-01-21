@@ -25,7 +25,7 @@ class UserModel extends ShieldUserModel
 
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['username', 'email', 'role_id', 'active', 'last_login','status'];
+    protected $allowedFields    = ['username', 'email', 'role_id', 'active', 'last_login', 'status'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -43,7 +43,6 @@ class UserModel extends ShieldUserModel
     // Validation
     protected $validationRules      = [
         'username' => 'required|min_length[3]|max_length[100]|is_unique[users.username,id,{id}]',
-        'email'    => 'required|valid_email|is_unique[users.email,id,{id}]',
         'status'   => 'permit_empty|in_list[active,inactive]'
     ];
     protected $validationMessages   = [
@@ -52,11 +51,6 @@ class UserModel extends ShieldUserModel
             'min_length' => 'Username minimal 3 karakter',
             'max_length' => 'Username maksimal 100 karakter',
             'is_unique' => 'Username sudah digunakan'
-        ],
-        'email' => [
-            'required' => 'Email harus diisi',
-            'valid_email' => 'Email tidak valid',
-            'is_unique' => 'Email sudah digunakan'
         ]
     ];
     protected $skipValidation       = false;
@@ -64,32 +58,14 @@ class UserModel extends ShieldUserModel
 
     // Callbacks
     protected $allowCallbacks = true;
-    protected $beforeInsert   = ['hashPassword', 'setDefaultAttributes']; // Added setDefaultAttributes
+    protected $beforeInsert   = ['setDefaultAttributes']; 
     protected $afterInsert    = [];
-    protected $beforeUpdate   = ['hashPasswordUpdate'];
+    protected $beforeUpdate   = [];
     protected $afterUpdate    = [];
     protected $beforeFind     = [];
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
-
-    protected function hashPassword(array $data)
-    {
-        if (isset($data['data']['password'])) {
-            $data['data']['password'] = password_hash($data['data']['password'], PASSWORD_DEFAULT);
-        }
-        return $data;
-    }
-
-    protected function hashPasswordUpdate(array $data)
-    {
-        if (isset($data['data']['password']) && !empty($data['data']['password'])) {
-            $data['data']['password'] = password_hash($data['data']['password'], PASSWORD_DEFAULT);
-        } else {
-            unset($data['data']['password']);
-        }
-        return $data;
-    }
 
     protected function setDefaultAttributes(array $data)
     {
@@ -109,13 +85,28 @@ class UserModel extends ShieldUserModel
              $data['data']['active'] = 0;
         }
 
+        // 4. Capture Email from Request if missing (Shield doesn't pass it to User Entity by default)
+        if (!isset($data['data']['email'])) {
+            $request = service('request');
+            $email = $request->getPost('email');
+            if ($email) {
+                $data['data']['email'] = $email;
+            }
+        }
+
+        // 5. Set default status
+        if (!isset($data['data']['status'])) {
+             $data['data']['status'] = 'active'; // Default status for registration
+        }
+
         return $data;
     }
 
     public function getUserWithRole($userId)
     {
-        return $this->select('users.*, roles.name as role_name, roles.display_name as role_display_name')
+        return $this->select('users.*, roles.name as role_name, roles.display_name as role_display_name, auth_identities.secret as email')
             ->join('roles', 'roles.id = users.role_id', 'left')
+            ->join('auth_identities', 'auth_identities.user_id = users.id AND auth_identities.type = \'email_password\'', 'left')
             ->where('users.id', $userId)
             ->asArray() // Fix: Return array to maintain compatibility with views
             ->first();
