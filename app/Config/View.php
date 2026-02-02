@@ -24,6 +24,17 @@ class View extends BaseView
     public $saveData = true;
 
     /**
+     * The path to the directory where app-specific view overrides are stored.
+     * This allows applications to override views from third-party packages.
+     * Set to null to disable this feature.
+     *
+     * @var string|null
+     */
+    public ?string $appOverridesFolder = '';
+
+
+
+    /**
      * Parser Filters map a filter name with any PHP callable. When the
      * Parser prepares a variable for display, it will chain it
      * through the filters in the order defined, inserting any parameters.
