@@ -66,7 +66,7 @@ Fitur unggulan dari CI4 yang membantu dalam pengemban database:
 
 - PHP 8.1 atau lebih tinggi
 - Composer
-- MySQL/MariaDB
+- PostgreSQL
 - Web server (Apache/Nginx) atau gunakan built-in server
 
 ### Langkah Instalasi
@@ -74,8 +74,8 @@ Fitur unggulan dari CI4 yang membantu dalam pengemban database:
 1. **Clone repository**
 
    ```bash
-   git clone https://github.com/muhammad-seman/codeigniter4_RBAC_boilerplate.git
-   cd codeigniter4_RBAC_boilerplate
+   git clone https://github.com/mdestafadilah/codeigniter4-rbac-shield.git
+   cd codeigniter4-rbac-shield
    ```
 
 2. **Install dependencies**
@@ -114,8 +114,7 @@ Fitur unggulan dari CI4 yang membantu dalam pengemban database:
 5. **Jalankan seeders untuk data contoh**
 
    ```bash
-   php spark db:seed UserSeeder
-   php spark db:seed MahasiswaSeeder
+   php spark db:seed DatabaseSeeder
    ```
 
 6. **Jalankan server**
@@ -158,12 +157,7 @@ Fitur unggulan dari CI4 yang membantu dalam pengemban database:
 ### Admin
 
 - **Username**: `admin`
-- **Password**: `admin123`
-
-### User
-
-- **Username**: `user1`
-- **Password**: `user123`
+- **Password**: `admin`
 
 ## 📁 Struktur Proyek
 
@@ -201,20 +195,6 @@ app/
 - [x] Role-based access control
 - [x] Password hashing
 
-### Dashboard
-
-- [x] Overview statistik
-- [x] Data mahasiswa terbaru
-- [x] Informasi sistem
-
-### Manajemen Mahasiswa
-
-- [x] Tambah data mahasiswa
-- [x] Lihat daftar mahasiswa
-- [x] Edit data mahasiswa
-- [x] Hapus data mahasiswa
-- [x] Validasi form
-
 ## 🚀 Development Commands
 
 ```bash
@@ -234,14 +214,7 @@ php spark migrate:rollback
 php spark make:seeder SeederName
 
 # Menjalankan seeder
-php spark db:seed SeederName
-   - UserSeeder
-   - RoleSeeder
-   - PermissionSeeder
-   - AssignRolePermissions
-   - UpdateAdminUserSeeder
-   - FixAllUsersSeeder
-   - dst.
+php spark db:seed DatabaseSeeder
 
 # Membuat controller
 php spark make:controller ControllerName
@@ -289,21 +262,9 @@ php spark migrate:file "app\Database\Migrations\2025-11-19-204424_LogActivity.ph
 - updated_at (DATETIME)
 ```
 
-### Mahasiswa Table
-
-```sql
-- id (INT, PRIMARY KEY, AUTO_INCREMENT)
-- nim (VARCHAR 20, UNIQUE)
-- nama (VARCHAR 100)
-- email (VARCHAR 100)
-- jurusan (VARCHAR 100)
-- angkatan (YEAR)
-- created_at (DATETIME)
-- updated_at (DATETIME)
-```
-
 ## 🔒 Security Features
 
+- ✅ Shield Powered!
 - ✅ Password hashing dengan PHP `password_hash()`
 - ✅ Session-based authentication
 - ✅ CSRF protection (dapat diaktifkan)
@@ -344,3 +305,7 @@ Jika Anda mengalami masalah atau memiliki pertanyaan:
 
 > Developed by [mdestafadilah](https://github.com/mdestafadilah/codeigniter4-rbac-shield)
 > Baseon [Muhammad Seman](https://github.com/muhammad-seman/codeigniter4_RBAC_boilerplate)
+
+```
+
+```
