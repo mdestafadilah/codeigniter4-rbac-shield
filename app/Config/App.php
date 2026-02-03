@@ -220,6 +220,17 @@ class App extends BaseConfig
     
     /**
      * --------------------------------------------------------------------------
+     * Compress Output
+     * --------------------------------------------------------------------------
+     *
+     * Enables Gzip output compression for faster page loads. When enabled,
+     * CodeIgniter will compress the output before sending it to the browser
+     * if the browser supports gzip compression.
+     */
+    public bool $compressOutput = true;
+    
+    /**
+     * --------------------------------------------------------------------------
      * Asset URL Management
      * --------------------------------------------------------------------------
      */
