@@ -288,7 +288,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 Jika Anda mengalami masalah atau memiliki pertanyaan:
 
-- 📧 Email: [mdestafadilah@gmail.com](mailto:[EMAIL_ADDRESS])
+- 📧 Email: [mdestafadilah@gmail.com](mailto:[mdestafadilah@gmail.com])
 - 🐛 Issues: [GitHub Issues](https://github.com/mdestafadilah/codeigniter4-rbac-shield/issues)
 - 💬 WhatsApp: [https://wa.me/6283898973731](https://wa.me/6283898973731)
 
