@@ -156,8 +156,8 @@ Fitur unggulan dari CI4 yang membantu dalam pengemban database:
 
 ### Admin
 
-- **Username**: `admin`
-- **Password**: `admin`
+- **Username**: `[EMAIL_ADDRESS]`
+- **Password**: `admin123`
 
 ## 📁 Struktur Proyek
 

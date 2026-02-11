@@ -1,0 +1,11 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3002:80"
+    volumes:
+      - ./:/var/www
+      - ./writable/uploads/:/var/www/public/uploads
+    restart: unless-stopped
