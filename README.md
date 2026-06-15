@@ -329,7 +329,17 @@ frankenphp run
 
 #### Untuk Production (Docker)
 
-Proyek sudah dilengkapi `Dockerfile` dan `docker-compose.yml` untuk deployment production. Namun secara default Dockerfile menggunakan **PHP-FPM + Nginx + Supervisor**, bukan FrankenPHP. Jika ingin menggunakan worker mode di production, sesuaikan Dockerfile untuk menggunakan FrankenPHP.
+Proyek sudah dilengkapi `Dockerfile` dan `docker-compose.yml` yang menggunakan **FrankenPHP** secara default. Worker mode sudah aktif langsung tanpa perlu konfigurasi tambahan.
+
+```bash
+# Build dan jalankan container
+docker compose up -d --build
+
+# Akses aplikasi di
+# http://localhost:3002
+```
+
+Dockerfile menggunakan base image `dunglas/frankenphp:8.3-alpine` dan menjalankan FrankenPHP dengan Caddyfile yang sudah dikonfigurasi untuk worker mode (`public/frankenphp-worker.php`).
 
 ### Menyesuaikan Jumlah Worker
 
