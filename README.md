@@ -239,6 +239,217 @@ php -r 'echo base64_encode(random_bytes(32));'
 php spark migrate:file "app\Database\Migrations\2025-11-19-204424_LogActivity.php"
 ```
 
+---
+
+## ⚡ Worker Mode (FrankenPHP)
+
+Proyek ini mendukung **Worker Mode** menggunakan **FrankenPHP** untuk meningkatkan performa secara signifikan (30-50% lebih cepat). Worker mode memungkinkan framework hanya melakukan bootstrap satu kali dan menangani banyak request dalam proses yang sama, tanpa perlu memuat ulang seluruh framework setiap request.
+
+### Prasyarat Worker Mode
+
+- **FrankenPHP** - Download dan install dari [frankenphp.dev](https://frankenphp.dev/)
+- **PHP 8.2** atau lebih tinggi
+- Syarat lainnya sama dengan instalasi standar (Composer, PostgreSQL, dll.)
+
+### Cara Kerja Worker Mode
+
+Worker mode memanfaatkan arsitektur **FrankenPHP** yang merupakan PHP server modern berbasis Caddy. Alurnya:
+
+1. **Bootstrap satu kali**: File `public/frankenphp-worker.php` menjalankan booting framework sekali saat worker pertama kali dijalankan
+2. **Persistent services**: Service seperti autoloader, cache, routes tetap bertahan antar request
+3. **Request handling**: Setiap request hanya menjalani fase routing, controller, dan view tanpa harus boot ulang
+4. **Memory management**: Garbage collection dipaksa setelah setiap request untuk mencegah memory leak
+
+### Konfigurasi Worker Mode
+
+#### 1. **Caddyfile** (Konfigurasi FrankenPHP)
+
+File `Caddyfile` di root proyek mengatur bagaimana FrankenPHP berjalan:
+
+```caddy
+{
+    frankenphp {
+        worker {
+            file public/frankenphp-worker.php
+            # num 16  # Uncomment untuk mengatur jumlah worker (default: 2x CPU cores)
+
+            # Watch file changes (development only)
+            watch app/**/*.php
+            watch vendor/**/*.php
+            watch .env
+        }
+    }
+    admin off
+}
+
+:8080 {
+    root * public
+    encode zstd br gzip
+    php_server {
+        try_files {path} frankenphp-worker.php
+    }
+    file_server
+}
+```
+
+#### 2. **WorkerMode Config** (`app/Config/WorkerMode.php`)
+
+Konfigurasi worker mode dapat disesuaikan melalui file `app/Config/WorkerMode.php`:
+
+```php
+class WorkerMode
+{
+    // Service yang tetap bertahan antar request
+    public array $persistentServices = [
+        'autoloader', 'locator', 'exceptions',
+        'commands', 'codeigniter', 'superglobals',
+        'routes', 'cache',
+    ];
+
+    // Event listeners yang di-reset antar request
+    public array $resetEventListeners = [];
+
+    // Paksa garbage collection setelah setiap request
+    public bool $forceGarbageCollection = true;
+}
+```
+
+### Menjalankan Worker Mode
+
+#### Untuk Development
+
+1. Pastikan FrankenPHP sudah terinstall dan tersedia di PATH
+2. Jalankan perintah berikut dari root proyek:
+
+```bash
+frankenphp run
+```
+
+3. Akses aplikasi di `http://localhost:8080`
+
+#### Untuk Production (Docker)
+
+Proyek sudah dilengkapi `Dockerfile` dan `docker-compose.yml` untuk deployment production. Namun secara default Dockerfile menggunakan **PHP-FPM + Nginx + Supervisor**, bukan FrankenPHP. Jika ingin menggunakan worker mode di production, sesuaikan Dockerfile untuk menggunakan FrankenPHP.
+
+### Menyesuaikan Jumlah Worker
+
+Jumlah worker secara default ditentukan oleh jumlah CPU cores (2x). Anda bisa mengubahnya di `Caddyfile`:
+
+```caddy
+worker {
+    file public/frankenphp-worker.php
+    num 16  # Set jumlah worker manual
+}
+```
+
+### Catatan Penting
+
+- **Hot Reload**: Pada mode development, FrankenPHP akan otomatis me-reload worker saat ada perubahan file di `app/`, `vendor/`, atau `.env`
+- **PHP 8.2+**: Worker mode membutuhkan **PHP 8.2 atau lebih tinggi** (lebih ketat dari mode standar yang hanya perlu PHP 8.1)
+- **Database Reconnection**: Koneksi database secara otomatis di-reconnect setiap request untuk mencegah koneksi stale
+- **Garbage Collection**: GC dipaksa berjalan setelah setiap request untuk menjaga penggunaan memori tetap stabil
+
+### Troubleshooting Worker Mode
+
+| Masalah                           | Solusi                                                                                                |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| **Worker crash**                  | Periksa log error FrankenPHP. Pastikan tidak ada kode yang bergantung pada state global antar request |
+| **Memory leak**                   | Tambahkan service yang bermasalah ke daftar `resetEventListeners` di `WorkerMode.php`                 |
+| **Database connection timeout**   | Pastikan `DatabaseConfig::reconnectForWorkerMode()` dipanggil di worker handler                       |
+| **File changes tidak terdeteksi** | Pastikan path pada `watch` di Caddyfile sudah benar                                                   |
+
+---
+
+## 🎨 Kustomisasi
+
+### Menambah Role Baru
+
+1. Update enum di migration `users` table
+2. Tambahkan kondisi di `AuthFilter.php`
+3. Update validasi di `UserModel.php`
+
+### Menambah Modul CRUD Baru
+
+1. Buat migration untuk tabel baru
+2. Buat model dengan validation rules
+3. Buat controller dengan method CRUD
+4. Buat views untuk UI
+5. Tambahkan routes di `Config/Routes.php`
+
+## ⚡ Worker Mode (FrankenPHP)
+
+Worker mode menggunakan **FrankenPHP** untuk meningkatkan performa aplikasi secara signifikan (30-50% atau lebih). Framework hanya di-boot satu kali dan menangani banyak request dalam proses yang sama.
+
+### Prasyarat
+
+- **PHP 8.2+** (minimal)
+- **[FrankenPHP](https://frankenphp.dev/)** - install sesuai OS Anda
+
+### Cara Menggunakan
+
+#### 1. Install FrankenPHP
+
+Ikuti petunjuk instalasi di situs resmi [FrankenPHP](https://frankenphp.dev/docs/).
+
+#### 2. Jalankan Aplikasi dengan Worker Mode
+
+```bash
+# Gunakan entry point worker untuk menjalankan aplikasi
+frankenphp php-server --worker public/frankenphp-worker.php --public-dir public
+```
+
+Atau jika menggunakan binary FrankenPHP yang sudah di-download:
+
+```bash
+./frankenphp php-server --worker public/frankenphp-worker.php --public-dir public
+```
+
+#### 3. Konfigurasi Worker Mode
+
+Sesuaikan konfigurasi di `app/Config/WorkerMode.php`:
+
+```php
+// Daftar service yang persist antar request (tidak di-reset)
+public array $persistentServices = [
+    'autoloader',
+    'locator',
+    'exceptions',
+    'commands',
+    'codeigniter',
+    'superglobals',
+    'routes',
+    'cache',
+];
+
+// Daftar event listeners yang akan di-reset antar request
+public array $resetEventListeners = [];
+
+// Force garbage collection setelah setiap request
+public bool $forceGarbageCollection = true;
+```
+
+### Cara Kerja
+
+Worker mode bekerja dengan skema sebagai berikut:
+
+1. **Boot satu kali** - Framework diinisialisasi sekali melalui `Boot::bootWorker()`
+2. **Loop request** - Setiap request masuk ditangani oleh handler yang sama tanpa menginisialisasi ulang framework
+3. **Reset state** - Setelah request selesai, state aplikasi di-reset (koneksi DB, session, services, dll)
+4. **GC (Garbage Collection)** - Opsional, membersihkan memory sisa setelah tiap request
+
+### Keuntungan Worker Mode
+
+- ✅ **Performa lebih cepat** - Tidak perlu boot framework ulang untuk setiap request
+- ✅ **Penggunaan memory lebih efisien** - Resource dibagi antar request
+- ✅ **Cocok untuk production** - Ideal untuk aplikasi dengan traffic tinggi
+
+### Catatan Penting
+
+- Pastikan session di-_close_ setelah request selesai (sudah otomatis di handler)
+- Factory dan Services di-reset secara otomatis antar request
+- Koneksi database yang memiliki transaksi belum di-_commit_ akan dibersihkan
+- Gunakan `$workerConfig->forceGarbageCollection = true` untuk mencegah memory leak
+
 ## 🎨 Kustomisasi
 
 ### Menambah Role Baru
