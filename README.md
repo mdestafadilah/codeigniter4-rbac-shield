@@ -376,96 +376,6 @@ worker {
 4. Buat views untuk UI
 5. Tambahkan routes di `Config/Routes.php`
 
-## ⚡ Worker Mode (FrankenPHP)
-
-Worker mode menggunakan **FrankenPHP** untuk meningkatkan performa aplikasi secara signifikan (30-50% atau lebih). Framework hanya di-boot satu kali dan menangani banyak request dalam proses yang sama.
-
-### Prasyarat
-
-- **PHP 8.2+** (minimal)
-- **[FrankenPHP](https://frankenphp.dev/)** - install sesuai OS Anda
-
-### Cara Menggunakan
-
-#### 1. Install FrankenPHP
-
-Ikuti petunjuk instalasi di situs resmi [FrankenPHP](https://frankenphp.dev/docs/).
-
-#### 2. Jalankan Aplikasi dengan Worker Mode
-
-```bash
-# Gunakan entry point worker untuk menjalankan aplikasi
-frankenphp php-server --worker public/frankenphp-worker.php --public-dir public
-```
-
-Atau jika menggunakan binary FrankenPHP yang sudah di-download:
-
-```bash
-./frankenphp php-server --worker public/frankenphp-worker.php --public-dir public
-```
-
-#### 3. Konfigurasi Worker Mode
-
-Sesuaikan konfigurasi di `app/Config/WorkerMode.php`:
-
-```php
-// Daftar service yang persist antar request (tidak di-reset)
-public array $persistentServices = [
-    'autoloader',
-    'locator',
-    'exceptions',
-    'commands',
-    'codeigniter',
-    'superglobals',
-    'routes',
-    'cache',
-];
-
-// Daftar event listeners yang akan di-reset antar request
-public array $resetEventListeners = [];
-
-// Force garbage collection setelah setiap request
-public bool $forceGarbageCollection = true;
-```
-
-### Cara Kerja
-
-Worker mode bekerja dengan skema sebagai berikut:
-
-1. **Boot satu kali** - Framework diinisialisasi sekali melalui `Boot::bootWorker()`
-2. **Loop request** - Setiap request masuk ditangani oleh handler yang sama tanpa menginisialisasi ulang framework
-3. **Reset state** - Setelah request selesai, state aplikasi di-reset (koneksi DB, session, services, dll)
-4. **GC (Garbage Collection)** - Opsional, membersihkan memory sisa setelah tiap request
-
-### Keuntungan Worker Mode
-
-- ✅ **Performa lebih cepat** - Tidak perlu boot framework ulang untuk setiap request
-- ✅ **Penggunaan memory lebih efisien** - Resource dibagi antar request
-- ✅ **Cocok untuk production** - Ideal untuk aplikasi dengan traffic tinggi
-
-### Catatan Penting
-
-- Pastikan session di-_close_ setelah request selesai (sudah otomatis di handler)
-- Factory dan Services di-reset secara otomatis antar request
-- Koneksi database yang memiliki transaksi belum di-_commit_ akan dibersihkan
-- Gunakan `$workerConfig->forceGarbageCollection = true` untuk mencegah memory leak
-
-## 🎨 Kustomisasi
-
-### Menambah Role Baru
-
-1. Update enum di migration `users` table
-2. Tambahkan kondisi di `AuthFilter.php`
-3. Update validasi di `UserModel.php`
-
-### Menambah Modul CRUD Baru
-
-1. Buat migration untuk tabel baru
-2. Buat model dengan validation rules
-3. Buat controller dengan method CRUD
-4. Buat views untuk UI
-5. Tambahkan routes di `Config/Routes.php`
-
 ## 📝 Database Schema
 
 ### Users Table
@@ -524,7 +434,3 @@ Jika Anda mengalami masalah atau memiliki pertanyaan:
 
 > Developed by [mdestafadilah](https://github.com/mdestafadilah/codeigniter4-rbac-shield)
 > Baseon [Muhammad Seman](https://github.com/muhammad-seman/codeigniter4_RBAC_boilerplate)
-
-```
-
-```
