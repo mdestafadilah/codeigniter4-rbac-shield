@@ -4,8 +4,11 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "3002:80"
+      - "3002:8080"
     volumes:
       - ./:/var/www
       - ./writable/uploads/:/var/www/public/uploads
+    environment:
+      - CI_ENVIRONMENT=development
+      - FRANKENPHP_CONFIG=worker{file public/frankenphp-worker.php}
     restart: unless-stopped
